@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon",
-    "dev:run": "node -r @swc-node/register ./src/index.ts"
+    "dev:run": "node -r @swc-node/register ./src/index.ts",
+    "prisma:format": "prisma format",
+    "prisma:init": "prisma migrate dev --name init",
+    "prisma:studio": "prisma studio"
   },
   "keywords": [],
   "author": "",
