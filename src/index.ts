@@ -2,7 +2,7 @@ import { ApolloServer } from "apollo-server";
 import { schema } from "./schema";
 import { createContext } from "./context";
 
-if (!process.env.APP_SECRET) {
+if (!process.env.APP_SECRET || process.env.APP_SECRET === "") {
   throw new Error("$APP_SECRET is not defined");
 }
 

@@ -6,12 +6,12 @@ import {
   stringArg,
 } from "nexus";
 import { applyMiddleware } from "graphql-middleware";
-import { PrismaClient } from "@prisma/client";
 import { permissions } from "./permissions";
 import { DateTimeResolver } from "graphql-scalars";
 import { Context } from "./context";
 import { compare, hash } from "bcryptjs";
 import { sign } from "jsonwebtoken";
+import { getUserId } from "./utils";
 
 export const DateTime = asNexusMethod(DateTimeResolver, "date");
 
@@ -20,10 +20,11 @@ const Query = objectType({
   definition(t) {
     t.nonNull.list.nonNull.field("tasks", {
       type: "Task",
-      resolve(_parent, { id }, ctx: Context) {
-        return (ctx.prisma as PrismaClient).task.findMany({
+      resolve(_parent, _args, ctx: Context) {
+        const ownerId = Number(getUserId(ctx));
+        return ctx.prisma.task.findMany({
           where: {
-            ownerId: id,
+            ownerId,
           },
         });
       },

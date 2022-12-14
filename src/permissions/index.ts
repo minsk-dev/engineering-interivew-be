@@ -10,23 +10,22 @@ const rules = {
   }),
 
   isTaskOwner: rule()(async (_parent, { id }, context: Context) => {
-    const userId = getUserId(context);
-    const owner = await context.prisma.task.findUnique({
+    const ownerId = Number(getUserId(context));
+
+    const task = await context.prisma.task.findUnique({
       where: { id },
       select: { ownerId: true },
     });
-    return Number(userId) === owner.ownerId;
+    return ownerId === task.ownerId;
   }),
 
-  allow: rule()((_parent, _args, _context) => {
-    return true;
-  }),
+  allow: rule()((_parent, _args, _context) => true),
 };
 
 export const permissions = shield(
   {
     Query: {
-      tasks: rules.isTaskOwner,
+      tasks: rules.isAuthenticatedUser,
     },
     Mutation: {
       signup: rules.allow,
