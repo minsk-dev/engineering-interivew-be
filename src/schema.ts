@@ -1,9 +1,17 @@
-import { asNexusMethod, makeSchema, objectType } from "nexus";
+import {
+  asNexusMethod,
+  makeSchema,
+  nonNull,
+  objectType,
+  stringArg,
+} from "nexus";
 import { applyMiddleware } from "graphql-middleware";
 import { PrismaClient } from "@prisma/client";
 import { permissions } from "./permissions";
 import { DateTimeResolver } from "graphql-scalars";
 import { Context } from "./context";
+import { compare, hash } from "bcryptjs";
+import { sign } from "jsonwebtoken";
 
 export const DateTime = asNexusMethod(DateTimeResolver, "date");
 
@@ -18,6 +26,68 @@ const Query = objectType({
             ownerId: id,
           },
         });
+      },
+    });
+  },
+});
+
+const AuthPayload = objectType({
+  name: "AuthPayload",
+  definition(t) {
+    t.nonNull.string("token");
+    t.nonNull.field("user", { type: "User" });
+  },
+});
+
+const Mutation = objectType({
+  name: "Mutation",
+  definition(t) {
+    t.field("signup", {
+      type: "AuthPayload",
+      args: {
+        name: stringArg(),
+        email: nonNull(stringArg()),
+        password: nonNull(stringArg()),
+      },
+      resolve: async (_parent, { name, email, password }, ctx: Context) => {
+        const hashedPassword = await hash(password, 10);
+        const user = await ctx.prisma.user.create({
+          data: {
+            name,
+            email,
+            password: hashedPassword,
+          },
+        });
+
+        return {
+          token: sign({ userId: user.id }, process.env.APP_SECRET),
+          user,
+        };
+      },
+    });
+
+    t.field("login", {
+      type: "AuthPayload",
+      args: {
+        email: nonNull(stringArg()),
+        password: nonNull(stringArg()),
+      },
+      resolve: async (_parent, { email, password }, ctx: Context) => {
+        const user = await ctx.prisma.user.findUnique({
+          where: {
+            email,
+          },
+        });
+
+        if (!user) throw new Error(`No such user found for email: ${email}`);
+
+        const valid = await compare(password, user.password);
+        if (!valid) throw new Error("Invalid password");
+
+        return {
+          token: sign({ userId: user.id }, process.env.APP_SECRET),
+          user,
+        };
       },
     });
   },
@@ -65,7 +135,7 @@ const Task = objectType({
 });
 
 const schemaWithoutPermissions = makeSchema({
-  types: [DateTime, Query, User, Task],
+  types: [DateTime, Query, Mutation, User, Task, AuthPayload],
   outputs: {
     schema: __dirname + "/../schema.graphql",
     typegen: __dirname + "/generated/nexus.ts",

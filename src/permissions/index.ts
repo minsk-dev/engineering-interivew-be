@@ -17,10 +17,23 @@ const rules = {
     });
     return Number(userId) === owner.ownerId;
   }),
+
+  allow: rule()((_parent, _args, _context) => {
+    return true;
+  }),
 };
 
-export const permissions = shield({
-  Query: {
-    tasks: rules.isTaskOwner,
+export const permissions = shield(
+  {
+    Query: {
+      tasks: rules.isTaskOwner,
+    },
+    Mutation: {
+      signup: rules.allow,
+      login: rules.allow,
+    },
   },
-});
+  {
+    debug: true,
+  }
+);
