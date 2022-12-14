@@ -91,6 +91,29 @@ const Mutation = objectType({
         };
       },
     });
+
+    t.field("createTask", {
+      type: "Task",
+      args: {
+        title: nonNull(stringArg()),
+        description: stringArg(),
+      },
+      resolve: async (_parent, { title, description }, ctx: Context) => {
+        const ownerId = Number(getUserId(ctx));
+        return ctx.prisma.task.create({
+          data: {
+            title,
+            description,
+            state: 0,
+            owner: {
+              connect: {
+                id: ownerId,
+              },
+            },
+          },
+        });
+      },
+    });
   },
 });
 

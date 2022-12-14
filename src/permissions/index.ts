@@ -30,6 +30,7 @@ export const permissions = shield(
     Mutation: {
       signup: rules.allow,
       login: rules.allow,
+      createTask: rules.isAuthenticatedUser,
     },
   },
   {
