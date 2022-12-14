@@ -83,6 +83,7 @@ export interface NexusGenFieldTypes {
   }
   Mutation: { // field return type
     createTask: NexusGenRootTypes['Task'] | null; // Task
+    deleteTask: boolean | null; // Boolean
     login: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     signup: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     updateTask: NexusGenRootTypes['Task'] | null; // Task
@@ -115,6 +116,7 @@ export interface NexusGenFieldTypeNames {
   }
   Mutation: { // field return type name
     createTask: 'Task'
+    deleteTask: 'Boolean'
     login: 'AuthPayload'
     signup: 'AuthPayload'
     updateTask: 'Task'
@@ -145,6 +147,9 @@ export interface NexusGenArgTypes {
     createTask: { // args
       description?: string | null; // String
       title: string; // String!
+    }
+    deleteTask: { // args
+      id: number; // Int!
     }
     login: { // args
       email: string; // String!

@@ -14,6 +14,7 @@ scalar DateTime
 
 type Mutation {
   createTask(description: String, title: String!): Task
+  deleteTask(id: Int!): Boolean
   login(email: String!, password: String!): AuthPayload
   signup(email: String!, name: String, password: String!): AuthPayload
   updateTask(description: String, id: Int!, state: Int, title: String): Task

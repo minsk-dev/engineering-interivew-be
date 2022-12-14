@@ -142,6 +142,22 @@ const Mutation = objectType({
         });
       },
     });
+
+    t.field("deleteTask", {
+      type: "Boolean",
+      args: {
+        id: nonNull(intArg()),
+      },
+      resolve: async (_parent, { id }, ctx: Context) => {
+        ctx.prisma.task.delete({
+          where: {
+            id: Number(id),
+          },
+        });
+
+        return true;
+      },
+    });
   },
 });
 
