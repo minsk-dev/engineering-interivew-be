@@ -54,6 +54,7 @@ export interface NexusGenObjects {
     createdAt: NexusGenScalars['DateTime']; // DateTime!
     description: string; // String!
     id: number; // Int!
+    state: number; // Int!
     title: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
@@ -84,6 +85,7 @@ export interface NexusGenFieldTypes {
     createTask: NexusGenRootTypes['Task'] | null; // Task
     login: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
     signup: NexusGenRootTypes['AuthPayload'] | null; // AuthPayload
+    updateTask: NexusGenRootTypes['Task'] | null; // Task
   }
   Query: { // field return type
     tasks: NexusGenRootTypes['Task'][]; // [Task!]!
@@ -93,6 +95,7 @@ export interface NexusGenFieldTypes {
     description: string; // String!
     id: number; // Int!
     owner: NexusGenRootTypes['User']; // User!
+    state: number; // Int!
     title: string; // String!
     updatedAt: NexusGenScalars['DateTime']; // DateTime!
   }
@@ -114,6 +117,7 @@ export interface NexusGenFieldTypeNames {
     createTask: 'Task'
     login: 'AuthPayload'
     signup: 'AuthPayload'
+    updateTask: 'Task'
   }
   Query: { // field return type name
     tasks: 'Task'
@@ -123,6 +127,7 @@ export interface NexusGenFieldTypeNames {
     description: 'String'
     id: 'Int'
     owner: 'User'
+    state: 'Int'
     title: 'String'
     updatedAt: 'DateTime'
   }
@@ -149,6 +154,12 @@ export interface NexusGenArgTypes {
       email: string; // String!
       name?: string | null; // String
       password: string; // String!
+    }
+    updateTask: { // args
+      description?: string | null; // String
+      id: number; // Int!
+      state?: number | null; // Int
+      title?: string | null; // String
     }
   }
 }

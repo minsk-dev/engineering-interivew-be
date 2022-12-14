@@ -31,6 +31,7 @@ export const permissions = shield(
       signup: rules.allow,
       login: rules.allow,
       createTask: rules.isAuthenticatedUser,
+      updateTask: rules.isTaskOwner,
     },
   },
   {

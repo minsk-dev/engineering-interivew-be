@@ -16,6 +16,7 @@ type Mutation {
   createTask(description: String, title: String!): Task
   login(email: String!, password: String!): AuthPayload
   signup(email: String!, name: String, password: String!): AuthPayload
+  updateTask(description: String, id: Int!, state: Int, title: String): Task
 }
 
 type Query {
@@ -27,6 +28,7 @@ type Task {
   description: String!
   id: Int!
   owner: User!
+  state: Int!
   title: String!
   updatedAt: DateTime!
 }

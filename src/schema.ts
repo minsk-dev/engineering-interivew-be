@@ -1,7 +1,9 @@
 import {
   asNexusMethod,
+  intArg,
   makeSchema,
   nonNull,
+  nullable,
   objectType,
   stringArg,
 } from "nexus";
@@ -114,6 +116,32 @@ const Mutation = objectType({
         });
       },
     });
+
+    t.field("updateTask", {
+      type: "Task",
+      args: {
+        id: nonNull(intArg()),
+        title: nullable(stringArg()),
+        description: nullable(stringArg()),
+        state: nullable(intArg()),
+      },
+      resolve: async (
+        _parent,
+        { id, title, description, state },
+        ctx: Context
+      ) => {
+        return ctx.prisma.task.update({
+          where: {
+            id: Number(id),
+          },
+          data: {
+            title,
+            description,
+            state,
+          },
+        });
+      },
+    });
   },
 });
 
@@ -145,6 +173,7 @@ const Task = objectType({
     t.nonNull.field("updatedAt", { type: "DateTime" });
     t.nonNull.string("title");
     t.nonNull.string("description");
+    t.nonNull.int("state");
     t.nonNull.field("owner", {
       type: "User",
       resolve(parent, { id }, ctx: Context) {
